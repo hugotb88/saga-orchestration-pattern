@@ -8,9 +8,13 @@ import org.springframework.kafka.config.TopicBuilder;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 
+/*
+Topics Creation and configurations
+ */
 @Configuration
 public class KafkaConfig {
 
+    //Topics declarations and configurations
     @Value("${orders.events.topic.name}")
     private String ordersEventsTopicName;
     @Value("${products.commands.topic.name}")

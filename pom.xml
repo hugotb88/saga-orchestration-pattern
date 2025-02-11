@@ -16,6 +16,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
+    <!-- All microservices involved in SAGA -->
     <modules>
         <module>orders-service</module>
         <module>products-service</module>
@@ -27,6 +28,8 @@
         <core.version>1.0.0</core.version>
         <revision>1.0.0</revision>
         <java.version>17</java.version>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
     </properties>
 
     <dependencyManagement>
