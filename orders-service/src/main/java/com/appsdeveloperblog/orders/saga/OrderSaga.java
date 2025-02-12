@@ -67,23 +67,24 @@ public class OrderSaga {
         orderHistoryService.add(event.getOrderId(), OrderStatus.CREATED);
     }
 
+    // Method that handles the Product reserved event when is successful
     @KafkaHandler
     public void handleEvent(@Payload ProductReservedEvent event) {
 
         ProcessPaymentCommand processPaymentCommand = new ProcessPaymentCommand(event.getOrderId(),
                 event.getProductId(),event.getProductPrice(), event.getProductQuantity());
-        kafkaTemplate.send(paymentsCommandsTopicName,processPaymentCommand);
+        kafkaTemplate.send(paymentsCommandsTopicName,processPaymentCommand); //Publishes a command to start payment process
     }
 
     @KafkaHandler
     public void handleEvent(@Payload PaymentProcessedEvent event) {
 
         ApproveOrderCommand approveOrderCommand = new ApproveOrderCommand(event.getOrderId());
-        kafkaTemplate.send(ordersCommandsTopicName,approveOrderCommand);
+        kafkaTemplate.send(ordersCommandsTopicName,approveOrderCommand); //Publishes a command indicating that the order can be APPROVED after Payment
     }
 
     @KafkaHandler
     public void handleEvent(@Payload OrderApprovedEvent event) {
-        orderHistoryService.add(event.getOrderId(), OrderStatus.APPROVED);
+        orderHistoryService.add(event.getOrderId(), OrderStatus.APPROVED); //Set the status of the Order as APPROVED
     }
 }

@@ -8,6 +8,10 @@ import org.springframework.kafka.config.TopicBuilder;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 
+/*
+Configurations for Payments topics
+And classes to handle Events in Payments
+ */
 @Configuration
 public class KafkaConfig {
 

@@ -3,6 +3,9 @@ package com.appsdeveloperblog.core.dto.commands;
 import java.math.BigDecimal;
 import java.util.UUID;
 
+/*
+Class used across multiple microservices that contain information about the payment of a product reserved from an order created
+ */
 public class ProcessPaymentCommand {
     private UUID orderId;
     private UUID productId;

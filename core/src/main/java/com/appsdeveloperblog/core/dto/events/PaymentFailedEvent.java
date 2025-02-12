@@ -1,7 +1,9 @@
 package com.appsdeveloperblog.core.dto.events;
 
 import java.util.UUID;
-
+/*
+Class used across multiple microservices when a Payment is NOT processed successfully
+ */
 public class PaymentFailedEvent {
     private UUID orderId;
     private UUID productId;

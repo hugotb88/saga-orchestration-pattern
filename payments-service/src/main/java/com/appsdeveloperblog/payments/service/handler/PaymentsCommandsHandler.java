@@ -15,6 +15,14 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
+/*
+Class that will handle all the messages coming to Payments
+Command - Instruction to perform a specific action. Often trigger the initial step within a SAGA.
+Event - signifies that something has happened within the system, usually published after each successful step in the SAGA.
+KafkaListener - Provides information about the topics to listen.
+KafkaHandler - Used in methods that should be invoked when a message is received from a Kafka Topic. Basically the methods that handle the messages
+KafkaTemplate - Class to send messages to a Kafka Topic
+ */
 @Component
 @KafkaListener(topics="${payments.commands.topic.name}")
 public class PaymentsCommandsHandler {
@@ -32,6 +40,7 @@ public class PaymentsCommandsHandler {
         this.paymentEventsTopicName = paymentEventsTopicName;
     }
 
+    //Method to handle commands coming to Payments
     @KafkaHandler
     public void handleCommand(@Payload ProcessPaymentCommand command) {
 
@@ -40,16 +49,16 @@ public class PaymentsCommandsHandler {
                     command.getProductId(),
                     command.getProductPrice(),
                     command.getProductQuantity());
-            Payment processedPayment = paymentService.process(payment);
+            Payment processedPayment = paymentService.process(payment); //Save the payment in a DB
             PaymentProcessedEvent paymentProcessedEvent = new PaymentProcessedEvent(processedPayment.getOrderId(),
                     processedPayment.getId());
-            kafkaTemplate.send(paymentEventsTopicName, paymentProcessedEvent);
+            kafkaTemplate.send(paymentEventsTopicName, paymentProcessedEvent); //Publishes an event of the Payment processed SUCCESS
         } catch (CreditCardProcessorUnavailableException e) {
             logger.error(e.getLocalizedMessage(), e);
             PaymentFailedEvent paymentFailedEvent = new PaymentFailedEvent(command.getOrderId(),
                     command.getProductId(),
                     command.getProductQuantity());
-            kafkaTemplate.send(paymentEventsTopicName,paymentFailedEvent);
+            kafkaTemplate.send(paymentEventsTopicName,paymentFailedEvent); // Publishes an event of the Payment processed FAILED.
         }
     }
 }

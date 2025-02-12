@@ -1,7 +1,9 @@
 package com.appsdeveloperblog.core.dto.events;
 
 import java.util.UUID;
-
+/*
+Class used across multiple microservices when a Payment is processed successfully
+ */
 public class PaymentProcessedEvent {
     private UUID orderId;
     private UUID paymentId;
