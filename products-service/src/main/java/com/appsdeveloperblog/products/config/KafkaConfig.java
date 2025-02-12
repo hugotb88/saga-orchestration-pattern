@@ -8,6 +8,9 @@ import org.springframework.kafka.config.TopicBuilder;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 
+/*
+Configuration and Creation of topics related to Products
+ */
 @Configuration
 public class KafkaConfig {
 

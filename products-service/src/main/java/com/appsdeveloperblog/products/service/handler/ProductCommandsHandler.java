@@ -14,6 +14,12 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
+/*
+This class will handle all the messages coming to product-service and product-commands-topic
+KafkaListener - Provides information about the topics to listen.
+KafkaHandler - Used in methods that should be invoked when a message is received from a Kafka Topic. Basically the methods that handle the messages
+KafkaTemplate - Class to send messages to a Kafka Topic
+ */
 @Component
 @KafkaListener(topics="${products.commands.topic.name}")
 public class ProductCommandsHandler {
@@ -31,6 +37,7 @@ public class ProductCommandsHandler {
         this.productEventsTopicName = productEventsTopicName;
     }
 
+    //Method that will handle a Reserve of a product as result of an Order Created
     @KafkaHandler
     public void handleCommand(@Payload ReserveProductCommand command) {
 
@@ -41,12 +48,12 @@ public class ProductCommandsHandler {
                     command.getProductId(),
                     reservedProduct.getPrice(),
                     command.getProductQuantity());
-            kafkaTemplate.send(productEventsTopicName, productReservedEvent);
+            kafkaTemplate.send(productEventsTopicName, productReservedEvent); //Publishes an Event indicating that the product was reserved was SUCCESSFUL.
         } catch (Exception e) {
             logger.error(e.getLocalizedMessage(), e);
             ProductReservationFailedEvent productReservationFailedEvent = new ProductReservationFailedEvent(command.getProductId(),
                     command.getOrderId(), command.getProductQuantity());
-            kafkaTemplate.send(productEventsTopicName, productReservationFailedEvent);
+            kafkaTemplate.send(productEventsTopicName, productReservationFailedEvent); //Publishes an Event indicating that the Product Reservation FAILED.
         }
     }
 }

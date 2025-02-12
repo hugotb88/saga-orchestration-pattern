@@ -19,6 +19,7 @@ public class ProductServiceImpl implements ProductService {
         this.productRepository = productRepository;
     }
 
+    //Method to reserve a product from stock, if stock is empty, will trigger an Exception
     @Override
     public Product reserve(Product desiredProduct, UUID orderId) {
         ProductEntity productEntity = productRepository.findById(desiredProduct.getId()).orElseThrow();

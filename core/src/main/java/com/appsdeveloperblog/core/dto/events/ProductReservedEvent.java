@@ -3,6 +3,10 @@ package com.appsdeveloperblog.core.dto.events;
 import java.math.BigDecimal;
 import java.util.UUID;
 
+
+/*
+Class used across multiple microservices that will contain information of the Product when is reserved from stock
+ */
 public class ProductReservedEvent {
     private UUID orderId;
     private UUID productId;

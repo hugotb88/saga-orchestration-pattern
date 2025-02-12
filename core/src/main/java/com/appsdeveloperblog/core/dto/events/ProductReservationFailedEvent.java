@@ -2,6 +2,9 @@ package com.appsdeveloperblog.core.dto.events;
 
 import java.util.UUID;
 
+/*
+Class used across multiple microservices to indicate that a Product Reservation failed.
+ */
 public class ProductReservationFailedEvent {
     private UUID productId;
     private UUID orderId;
