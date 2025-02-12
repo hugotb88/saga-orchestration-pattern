@@ -16,6 +16,15 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
+/*
+SAGA Class
+This class will coordinate a series of transactions across multiple microservices.
+Command - Instruction to perform a specific action. Often trigger the initial step within a SAGA.
+Event - signifies that something has happened within the system, usually published after each successful step in the SAGA.
+KafkaListener - Provides information about the topics to listen.
+KafkaHandler - Used in methods that should be invoked when a message is received from a Kafka Topic. Basically the methods that handle the messages
+KafkaTemplate - Class to send messages to a Kafka Topic
+ */
 @Component
 @KafkaListener(topics={
         "${orders.events.topic.name}",
@@ -42,6 +51,7 @@ public class OrderSaga {
         this.ordersCommandsTopicName = ordersCommandsTopicName;
     }
 
+    //When an Order is created (Event), this will send a message (command) to Reserve the Product
     @KafkaHandler
     public void handleEvent(@Payload OrderCreatedEvent event) {
 

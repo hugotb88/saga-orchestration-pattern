@@ -2,6 +2,9 @@ package com.appsdeveloperblog.core.dto.commands;
 
 import java.util.UUID;
 
+/*
+This command will be used in different microservices, thats why is created as part of a library and not every time in each one of the microservices
+ */
 public class ReserveProductCommand {
     private UUID productId;
     private Integer productQuantity;
