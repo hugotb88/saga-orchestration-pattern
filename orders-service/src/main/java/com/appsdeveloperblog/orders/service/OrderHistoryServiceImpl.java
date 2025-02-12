@@ -20,6 +20,7 @@ public class OrderHistoryServiceImpl implements OrderHistoryService {
         this.orderHistoryRepository = orderHistoryRepository;
     }
 
+    //Order saved in DB with its status
     @Override
     public void add(UUID orderId, OrderStatus orderStatus) {
         OrderHistoryEntity entity = new OrderHistoryEntity();
@@ -29,6 +30,7 @@ public class OrderHistoryServiceImpl implements OrderHistoryService {
         orderHistoryRepository.save(entity);
     }
 
+    //Returns an Order based on its ID
     @Override
     public List<OrderHistory> findByOrderId(UUID orderId) {
         var entities = orderHistoryRepository.findByOrderId(orderId);

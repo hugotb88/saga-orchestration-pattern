@@ -62,6 +62,8 @@ public class OrderSaga {
         );
 
         kafkaTemplate.send(productsCommandsTopicName,command);
+
+        //Save order status in DB
         orderHistoryService.add(event.getOrderId(), OrderStatus.CREATED);
     }
 
