@@ -1,12 +1,7 @@
 package com.appsdeveloperblog.orders.saga;
 
-import com.appsdeveloperblog.core.dto.commands.ApproveOrderCommand;
-import com.appsdeveloperblog.core.dto.commands.ProcessPaymentCommand;
-import com.appsdeveloperblog.core.dto.commands.ReserveProductCommand;
-import com.appsdeveloperblog.core.dto.events.OrderApprovedEvent;
-import com.appsdeveloperblog.core.dto.events.OrderCreatedEvent;
-import com.appsdeveloperblog.core.dto.events.PaymentProcessedEvent;
-import com.appsdeveloperblog.core.dto.events.ProductReservedEvent;
+import com.appsdeveloperblog.core.dto.commands.*;
+import com.appsdeveloperblog.core.dto.events.*;
 import com.appsdeveloperblog.core.types.OrderStatus;
 import com.appsdeveloperblog.orders.service.OrderHistoryService;
 import org.springframework.beans.factory.annotation.Value;
@@ -86,5 +81,27 @@ public class OrderSaga {
     @KafkaHandler
     public void handleEvent(@Payload OrderApprovedEvent event) {
         orderHistoryService.add(event.getOrderId(), OrderStatus.APPROVED); //Set the status of the Order as APPROVED
+    }
+
+    //Part of Compensatory Transaction when the Payment fails, we need to Cancel the Product Reservation
+    @KafkaHandler
+    public void handleEvent(@Payload PaymentFailedEvent event){
+        CancelProductReservationCommand cancelProductReservationCommand = new CancelProductReservationCommand(
+                event.getProductId(),
+                event.getOrderId(),
+                event.getProductQuantity()
+        );
+
+        kafkaTemplate.send(productsCommandsTopicName,cancelProductReservationCommand);
+    }
+
+    //Part of Compensatory Transaction to handle Product Reservation CANCELED
+    @KafkaHandler
+    public void handleEvent(@Payload ProductReservationCancelledEvent event){
+        RejectOrderCommand rejectOrderCommand = new RejectOrderCommand(event.getOrderId());
+        kafkaTemplate.send(ordersCommandsTopicName,rejectOrderCommand);
+
+        //Add record of rejected order to FB
+        orderHistoryService.add(event.getOrderId(), OrderStatus.REJECTED);
     }
 }
